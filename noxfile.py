@@ -9,20 +9,20 @@ from nox.sessions import Session
 
 src_dir: Path = Path(__file__).parent / "src"
 python_code_path_list: t.List[str] = [
-    # f"{src_dir}",
+    f"{src_dir}",
     "noxfile.py",
 ]
 assert all(isinstance(path, str) for path in python_code_path_list)
-env_common: t.Dict[str, str] = {
-    # "PYTHONPATH": f"{src_dir}",
+env_common: dict[str, str] = {
+    "PYTHONPATH": f"{src_dir}",
 }
 nox_tmp_dir: Path = Path(__file__).parent / ".nox_tmp"
-python_version_list: t.List[str] = ["3.10"]  # TODO: check python version
+python_version_list: list[str] = ["3.11"]
 
 
 class SessionKwargs(t.TypedDict, total=False):
-    env: t.Dict[str, str]
-    success_codes: t.List[int]
+    env: dict[str, str]
+    success_codes: list[int]
 
 
 def install_package(session: Session, dev: bool = False) -> None:
@@ -49,7 +49,7 @@ def install_package(session: Session, dev: bool = False) -> None:
 
 @nox.session(python=python_version_list)
 def format(session: Session) -> None:
-    env: t.Dict[str, str] = {}
+    env: dict[str, str] = {}
     env.update(env_common)
     kwargs: SessionKwargs = {"env": env, "success_codes": [0, 1]}
 
@@ -70,7 +70,7 @@ def format(session: Session) -> None:
 
 @nox.session(python=python_version_list)
 def lint(session: Session) -> None:
-    env: t.Dict[str, str] = {}
+    env: dict[str, str] = {}
     env.update(env_common)
     kwargs: SessionKwargs = {"env": env}
 
@@ -84,7 +84,7 @@ def lint(session: Session) -> None:
 
 @nox.session(python=python_version_list)
 def test(session: Session) -> None:
-    env: t.Dict[str, str] = {}
+    env: dict[str, str] = {}
     env.update(env_common)
     kwargs: SessionKwargs = {"env": env}
 
