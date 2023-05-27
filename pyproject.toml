@@ -39,7 +39,9 @@ version = "0.1.0"
 description = ""
 authors = ["pollenjp <polleninjp@gmail.com>"]
 readme = "README.md"
-packages = [{include = "fastapi_score_server_app"}]
+packages = [
+    # {include = "fastapi_score_server_app"}
+]
 
 [tool.poetry.dependencies]
 python = "^3.11"
