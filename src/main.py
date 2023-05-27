@@ -1,6 +1,9 @@
-def hello_world() -> str:
-    return "Hello World!"
+# Third Party Library
+from fastapi import FastAPI
+
+app = FastAPI()
 
 
-if __name__ == "__main__":
-    print(hello_world())
+@app.get("/")
+async def root() -> dict[str, str]:
+    return {"msg": "Hello World"}
