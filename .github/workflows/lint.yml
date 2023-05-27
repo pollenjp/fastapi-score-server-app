@@ -21,6 +21,6 @@ jobs:
           virtualenvs-in-project: true
           installer-parallel: true
       - name: Install dependencies
-        run: poetry install --sync
+        run: poetry install
       - name: lint
         run: poetry run nox --session lint
