@@ -17,6 +17,12 @@ test:  ## test
 	@echo "test"
 	PYTHONPATH=./src poetry run pytest
 
+.PHONY: codegen
+codegen:  ## codegen from openapi specification
+	poetry run datamodel-codegen \
+		--input-file-type openapi \
+		--input ./openapi/api.yml \
+		--output ./src/fastapi_score_server_app/handler/schema.py
 
 #########
 # Utils #
