@@ -1,9 +1,11 @@
 # Third Party Library
 from fastapi import FastAPI
 
+# Local Library
+from ..handler.handler import define_error_handling
+from ..handler.handler import define_handlers
+
 app = FastAPI()
 
-
-@app.get("/")
-async def root() -> dict[str, str]:
-    return {"msg": "Hello World"}
+define_error_handling(app)
+define_handlers(app)
