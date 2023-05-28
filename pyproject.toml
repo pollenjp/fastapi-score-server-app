@@ -40,7 +40,7 @@ description = ""
 authors = ["pollenjp <polleninjp@gmail.com>"]
 readme = "README.md"
 packages = [
-    {include = "fastapi_score_server_app"}
+    {include = "fastapi_score_server_app", from = "src"}
 ]
 
 [tool.poetry.dependencies]
