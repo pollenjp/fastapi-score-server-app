@@ -2,8 +2,12 @@
 from fastapi import FastAPI
 from fastapi import Request
 from fastapi.responses import JSONResponse
+from pydantic import BaseModel
 
 # Local Library
+from ..repository.repository import BaseRepository
+from ..repository.repository import ScoreToRegister
+from ..service import service
 from .schema import Error
 from .schema import ScoreRequest
 from .schema import ScoreResponse
@@ -17,9 +21,9 @@ class DefaultException(Exception):
         self.message = message
 
 
-def define_error_handler(app: FastAPI) -> None:
+def define_error_handler(app: FastAPI, repo: BaseRepository) -> None:
     @app.exception_handler(DefaultException)
-    async def unicorn_exception_handler(request: Request, exc: DefaultException) -> JSONResponse:
+    async def default_exception_handler(request: Request, exc: DefaultException) -> JSONResponse:
         error = Error(code=exc.error_code, message=exc.message)
         return JSONResponse(
             status_code=exc.status_code,
@@ -27,27 +31,43 @@ def define_error_handler(app: FastAPI) -> None:
         )
 
 
-def define_handlers(app: FastAPI) -> None:
+class EmptyResponse(BaseModel):
+    pass
+
+
+def define_handlers(app: FastAPI, repo: BaseRepository) -> None:
     @app.get("/")
     async def root() -> dict[str, str]:
         return {"msg": "Hello World"}
 
     @app.get("/scores", response_model=ScoresResponse)
     async def get_scores() -> ScoresResponse:
-        # TODO: replace later
         try:
-            scores = ScoresResponse(__root__=[ScoreResponse(id=1, username="user1", value=100)])
+            scores = list(
+                map(
+                    lambda score: ScoreResponse(id=score.id, username=score.username, value=score.value),
+                    service.get_scores(repo),
+                )
+            )
+            scores_res = ScoresResponse(__root__=scores)
         except Exception as e:
             raise DefaultException(status_code=500, error_code=1, message=str(e))
-        return scores
+        return scores_res
 
-    @app.post("/scores")
-    async def post_scores(body: ScoreRequest) -> None:
-        # TODO: 登録
-        return None
+    @app.post("/scores", response_model=EmptyResponse)
+    async def post_score(body: ScoreRequest) -> EmptyResponse:
+        print("helo")
+        try:
+            service.register_a_score(repo, ScoreToRegister(username=body.username, value=body.value))
+            return EmptyResponse()
+        except Exception as e:
+            raise DefaultException(status_code=500, error_code=1, message=str(e))
 
     @app.get("/scores/{score_id}", response_model=ScoreResponse)
     async def get_a_score(score_id: int) -> ScoreResponse:
-        # TODO: replace later
-        score = ScoreResponse(id=1, username="user1", value=100)
-        return score
+        try:
+            score = service.find_a_score(repo, score_id)
+            score_res = ScoreResponse(id=score.id, username=score.username, value=score.value)
+        except Exception as e:
+            raise DefaultException(status_code=500, error_code=1, message=str(e))
+        return score_res
