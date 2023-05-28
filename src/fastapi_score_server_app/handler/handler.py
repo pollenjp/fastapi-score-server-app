@@ -17,7 +17,7 @@ class DefaultException(Exception):
         self.message = message
 
 
-def define_error_handling(app: FastAPI) -> None:
+def define_error_handler(app: FastAPI) -> None:
     @app.exception_handler(DefaultException)
     async def unicorn_exception_handler(request: Request, exc: DefaultException) -> JSONResponse:
         error = Error(code=exc.error_code, message=exc.message)
