@@ -1,14 +1,14 @@
 openapi: "3.0.0"
 info:
   version: 0.0.1
-  title: Score API
+  title: ScoreResponse API
 servers:
   - url: http://localhost:3000
 paths:
   /scores:
     get:
       summary: List all scores
-      operationId: listScores
+      operationId: listScoresResponse
       tags:
         - scores
       parameters:
@@ -30,7 +30,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Scores"
+                $ref: "#/components/schemas/ScoresResponse"
         default:
           description: unexpected error
           content:
@@ -39,16 +39,19 @@ paths:
                 $ref: "#/components/schemas/Error"
     post:
       summary: Create a score
-      operationId: createScores
+      operationId: createScoresResponse
       tags:
         - scores
+      requestBody:
+        description: Body
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ScoreRequest"
       responses:
         "201":
-          description: Null response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Scores"
+          description: Created
         default:
           description: unexpected error
           content:
@@ -58,7 +61,7 @@ paths:
   /scores/{scoreId}:
     get:
       summary: Info for a specific pet
-      operationId: showScoreById
+      operationId: showScoreResponseById
       tags:
         - scores
       parameters:
@@ -74,7 +77,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Scores"
+                $ref: "#/components/schemas/ScoresResponse"
         default:
           description: unexpected error
           content:
@@ -83,7 +86,17 @@ paths:
                 $ref: "#/components/schemas/Error"
 components:
   schemas:
-    Score:
+    ScoreRequest:
+      required:
+        - username
+        - value
+      properties:
+        username:
+          type: string
+        value:
+          type: integer
+          format: int32
+    ScoreResponse:
       required:
         - id
         - username
@@ -97,10 +110,10 @@ components:
         value:
           type: integer
           format: int32
-    Scores:
+    ScoresResponse:
       type: array
       items:
-        $ref: "#/components/schemas/Score"
+        $ref: "#/components/schemas/ScoreResponse"
     Error:
       required:
         - code

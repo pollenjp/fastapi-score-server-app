@@ -5,7 +5,7 @@ export
 
 .PHONY: run
 run:  ## run app
-	poetry run uvicorn src.main:app --reload
+	poetry run uvicorn src.fastapi_score_server_app.bin.main:app --reload
 
 .PHONY: format
 format:  ## format and lint
