@@ -2,7 +2,7 @@
 from fastapi.testclient import TestClient
 
 # First Party Library
-from main import app
+from fastapi_score_server_app.bin.main import app
 
 client = TestClient(app)
 

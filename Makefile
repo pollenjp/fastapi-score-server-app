@@ -5,7 +5,7 @@ export
 
 .PHONY: run
 run:  ## run app
-	poetry run uvicorn src.main:app --reload
+	poetry run uvicorn src.fastapi_score_server_app.bin.main:app --reload
 
 .PHONY: format
 format:  ## format and lint
@@ -17,6 +17,12 @@ test:  ## test
 	@echo "test"
 	PYTHONPATH=./src poetry run pytest
 
+.PHONY: codegen
+codegen:  ## codegen from openapi specification
+	poetry run datamodel-codegen \
+		--input-file-type openapi \
+		--input ./openapi/api.yml \
+		--output ./src/fastapi_score_server_app/handler/schema.py
 
 #########
 # Utils #
