@@ -54,12 +54,13 @@ def define_handlers(app: FastAPI, repo: BaseRepository) -> None:
             raise DefaultException(status_code=500, error_code=1, message=str(e))
         return scores_res
 
-    @app.post("/scores", response_model=EmptyResponse)
-    async def post_score(body: ScoreRequest) -> EmptyResponse:
+    @app.post("/scores", response_model=ScoreResponse)
+    async def post_score(body: ScoreRequest) -> ScoreResponse:
         print("helo")
         try:
-            service.register_a_score(repo, ScoreToRegister(username=body.username, value=body.value))
-            return EmptyResponse()
+            score = service.register_a_score(repo, ScoreToRegister(username=body.username, value=body.value))
+            score_res = ScoreResponse(id=score.id, username=score.username, value=score.value)
+            return score_res
         except Exception as e:
             raise DefaultException(status_code=500, error_code=1, message=str(e))
 
